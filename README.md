@@ -2,6 +2,8 @@
 ### Intelligent Disaster Analysis & Response System
 **Real-time disaster classification and human detection using Dual-Agent AI (Vision + LLM).**
 
+[![GCP Deployment](https://img.shields.io/badge/GCP-Live_Demo-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)](http://34.100.197.87)
+
 [![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Node.js](https://img.shields.io/badge/Auth-Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Flask](https://img.shields.io/badge/AI_Server-Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
@@ -12,6 +14,10 @@
 
 ## 🚀 Overview
 **ThreatSense AI** is a cutting-edge disaster management platform. It processes live video feeds to identify disasters (Wildfire, Flood, Earthquake) and quantify human presence to prioritize rescue operations.
+
+### 🌍 Live Deployment
+The application is deployed on **Google Cloud Platform (Compute Engine)** in the `asia-south1` region for low-latency access.
+- **Live Demo**: [http://34.100.197.87](http://34.100.197.87)
 
 It features a **Dual-Agent Architecture**:
 1.  **Fast Vision Agent**: Uses **ViT (Vision Transformer)** and **YOLOv8** for sub-second, real-time detection.
