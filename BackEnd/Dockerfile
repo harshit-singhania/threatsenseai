@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["node", "--experimental-json-modules", "src/index.js"]
+CMD ["npm", "start"]

@@ -1,0 +1,58 @@
+services:
+  # 1. Frontend: Served via Nginx (Production Build)
+  frontend:
+    build:
+      context: ./FrontEnd
+      dockerfile: Dockerfile
+    ports:
+      - "80:80" # Standard HTTP port
+    depends_on:
+      - backend
+      - flaskserver
+    restart: always
+
+  # 2. Node.js Backend: Identity & Auth
+  backend:
+    build: ./BackEnd
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://threatsense:securepassword@db:5432/threatsense_db
+      # In prod, this should likely be the domain name or Load Balancer URL
+      - CORS_ORIGIN=http://localhost
+    depends_on:
+      - db
+    restart: always
+
+  # 3. Flask AI Server: Computer Vision + LLM
+  flaskserver:
+    build: ./FlaskServer
+    ports:
+      - "7001:7001"
+    environment:
+      - DATABASE_URL=postgresql://threatsense:securepassword@db:5432/threatsense_db
+      - FLASK_ENV=production
+      # Secrets should be passed via .env file or CI/CD secrets
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GOOGLE_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      - db
+    restart: always
+
+  # 4. Database: PostgreSQL (Persistent)
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=threatsense
+      - POSTGRES_PASSWORD=securepassword
+      - POSTGRES_DB=threatsense_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres_prod_data:

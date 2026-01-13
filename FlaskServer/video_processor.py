@@ -20,14 +20,26 @@ except ImportError as e:
     def detect_person_count(image_path):
         return 0
 
-def process_video(video_path, sample_rate=30):
+def process_video(video_path, sample_rate=None):
     """
     Process video frames to detect threats and people.
-    sample_rate: Process 1 frame every 'sample_rate' frames.
+    sample_rate: Optional. If None, dynamically calculated to process ~20 frames total.
     """
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
         raise ValueError("Could not open video file")
+
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    
+    if sample_rate is None:
+        target_frames = 20
+        if total_frames > 0:
+            sample_rate = max(30, total_frames // target_frames)
+        else:
+            sample_rate = 30 # Fallback
+            
+    print(f"Processing video: {video_path}")
+    print(f"Total Frames: {total_frames}, Sample Rate: {sample_rate}")
 
     frame_count = 0
     predictions = []

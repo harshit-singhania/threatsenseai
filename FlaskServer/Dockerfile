@@ -1,6 +1,7 @@
 FROM python:3.10-slim
 
 WORKDIR /app
+ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies for OpenCV
 RUN apt-get update && apt-get install -y \
@@ -15,4 +16,5 @@ COPY . .
 
 EXPOSE 7001
 
-CMD ["python", "app.py"]
+# Run with Gunicorn for production
+CMD ["gunicorn", "--workers", "1", "--bind", "0.0.0.0:7001", "--timeout", "120", "app:app"]

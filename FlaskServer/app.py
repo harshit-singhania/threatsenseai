@@ -18,7 +18,7 @@ from models import db, User, VideoLog
 app = Flask(__name__)
 
 # Security: Restrict CORS to the frontend origin
-CORS(app, origins=["http://localhost:5173"])
+CORS(app, origins=["http://localhost:5173", "http://localhost"])
 
 # Database connection
 # Default to local sqlite if not provided, for safety, but prioritize Postgres
