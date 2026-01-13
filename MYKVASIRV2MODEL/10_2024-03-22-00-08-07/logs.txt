@@ -1,0 +1,10 @@
+              precision    recall  f1-score   support
+
+  earthquake     0.9890    0.9783    0.9836        92
+       flood     0.9778    0.9888    0.9832        89
+    wildfire     1.0000    1.0000    1.0000        89
+
+    accuracy                         0.9889       270
+   macro avg     0.9889    0.9890    0.9889       270
+weighted avg     0.9889    0.9889    0.9889       270
+

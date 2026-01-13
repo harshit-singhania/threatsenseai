@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   frontend:
     build: ./FrontEnd
@@ -15,22 +13,33 @@ services:
       - "8000:8000"
     environment:
       - PORT=8000
-      - MONGODB_URI=mongodb://mongo:27017/threatsense
+      - DATABASE_URL=postgresql://threatsense:securepassword@db:5432/threatsense_db
       - CORS_ORIGIN=http://localhost:5173
     depends_on:
-      - mongo
+      - db
 
   flaskserver:
     build: ./FlaskServer
     ports:
       - "7001:7001"
+    environment:
+      - DATABASE_URL=postgresql://threatsense:securepassword@db:5432/threatsense_db
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GOOGLE_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      - db
 
-  mongo:
-    image: mongo:latest
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=threatsense
+      - POSTGRES_PASSWORD=securepassword
+      - POSTGRES_DB=threatsense_db
     ports:
-      - "27017:27017"
+      - "5434:5432"
     volumes:
-      - mongo-data:/data/db
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  mongo-data:
+  postgres_data:

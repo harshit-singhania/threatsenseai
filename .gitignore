@@ -1,4 +1,5 @@
 BackEnd/node_modules
 FrontEnd/node_modules
 sample_vids/*
-create_sample_video.py
+
+.env

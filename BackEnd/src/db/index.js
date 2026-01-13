@@ -1,15 +1,20 @@
-import mongoose from "mongoose";
-import { DB_NAME } from "../constants.js";
+import pg from 'pg';
+const { Pool } = pg;
 
-const dbConnect=async()=>{
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL
+});
+
+const dbConnect = async () => {
     try {
-        const connectionInstance=await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`)
-        console.log(`Connection Successful...Host ${connectionInstance.connection.host}`)
-        
+        const client = await pool.connect();
+        console.log(`\n PostgreSQL Connected! Host: ${client.host}`);
+        client.release();
     } catch (error) {
-        console.log("MONGODB Connection Failed",error);
+        console.error("PostgreSQL Connection Failed:", error);
         process.exit(1);
     }
 }
 
+export { pool };
 export default dbConnect;

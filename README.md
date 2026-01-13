@@ -1,117 +1,80 @@
 # ThreatSense AI 🚨
 ### Intelligent Disaster Analysis & Response System
-**Real-time disaster classification and human detection using Hybrid AI Architectures (ViT + YOLOv8).**
+**Real-time disaster classification and human detection using Dual-Agent AI (Vision + LLM).**
 
 [![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![Node.js](https://img.shields.io/badge/Orchestration-Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Auth-Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Flask](https://img.shields.io/badge/AI_Server-Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
-[![Docker](https://img.shields.io/badge/Deployment-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![YOLOv8](https://img.shields.io/badge/Vision-YOLOv8-00FFFF?style=for-the-badge&logo=yolo&logoColor=black)](https://docs.ultralytics.com/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Gemini](https://img.shields.io/badge/AI-Gemini%202.0-8E75B2?style=for-the-badge&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
 
 ---
 
 ## 🚀 Overview
-**ThreatSense AI** is a disaster management platform designed to automate the assessment of natural calamities. By processing live video feeds (MP4, AVI, MOV), it identifies disaster types and quantifies human presence in danger zones to prioritize rescue operations.
+**ThreatSense AI** is a cutting-edge disaster management platform. It processes live video feeds to identify disasters (Wildfire, Flood, Earthquake) and quantify human presence to prioritize rescue operations.
 
-The system utilizes a **Microservices Architecture**, separating the user management logic (Node.js) from the compute-intensive AI inference engine (Python/Flask).
+It features a **Dual-Agent Architecture**:
+1.  **Fast Vision Agent**: Uses **ViT (Vision Transformer)** and **YOLOv8** for sub-second, real-time detection.
+2.  **Thinking Agent (Gemini 2.0)**: A fallback integration that analyzes ambiguous scenes to provide high-confidence verification and detailed reports.
 
 ---
 
 ## 🏗 System Architecture
 
-The application is composed of three decoupled services communicating via REST APIs:
+The application follows a **Microservices Architecture** with a shared Polyglot Persistence layer:
 
 ```mermaid
 graph LR
-    A[React Client] -->|User Auth/Data| B(Node.js Backend)
-    A -->|Upload Video| C{Flask AI Server}
-    B <-->|Persist Data| D[(MongoDB)]
-    C -->|Classify Disaster| E[ViT Model]
-    C -->|Detect Humans| F[YOLOv8 Model]
+    A[React Client] -->|Auth/User Data| B(Node.js Identity Service)
+    A -->|Video Analysis| C{Flask AI Service}
+    B <-->|Shared DB| D[(PostgreSQL)]
+    C <-->|Shared DB| D
+    C -->|Fast Path| E[ViT + YOLO]
+    C -->|Slow Path| F[Gemini 2.0 Flash]
     C -->|Return Analysis| A
-
 ```
 
-### 🧠 AI Capabilities
-
-| Component | Model | Function |
-| --- | --- | --- |
-| **Disaster Classifier** | `Vision Transformer (ViT)` | Classifies scenarios into **Wildfire**, **Flood**, or **Earthquake** using `google/vit-base-patch16-224`. |
-| **Human Detection** | `YOLOv8` (Ultralytics) | Real-time object detection to count individuals trapped in the footage. |
+### 🧠 Dual-Agent Logic
+| Agent | Role | Models | Trigger Condition |
+| --- | --- | --- | --- |
+| **Vision Agent** | rapid triage | `ViT-base-patch16` + `YOLOv8n` | Always active (Default) |
+| **Thinking Agent** | Complex reasoning | `Google Gemini 2.0 Flash` | Triggered if Vision Agent is uncertain ("Normal") |
 
 ---
 
-## ⚡ Quick Start (Docker)
+## ⚡ Quick Start (Local)
 
-The fastest way to deploy the full stack is via Docker Compose.
+We run the application services locally for best performance, using a lightweight Docker container for the database.
 
 **Prerequisites**
+*   Node.js & npm
+*   Python 3.10+
+*   Docker (only for Database)
 
-* Docker Desktop installed and running.
-
-**Deploy**
+**Setup & Run**
 
 ```bash
 # 1. Clone the repository
-git clone [https://github.com/harshit-singhania/ThreatSenseAI.git](https://github.com/harshit-singhania/ThreatSenseAI.git)
+git clone https://github.com/harshit-singhania/ThreatSenseAI.git
 
-# 2. Build and Run Container Swarm
-docker compose up --build
-
+# 2. Start Everything
+# This script starts the Postgres container and launches Node/Flask/React locally.
+./start_local.sh
 ```
 
-*Access the dashboard at `http://localhost:5173*`
-
----
-
-## 🛠 Manual Installation
-
-If you prefer to run services individually for development:
-
-### 1. Backend Service (Node.js)
-
-Handles user authentication and database operations.
-
-```bash
-cd BackEnd
-npm install
-# Create .env with MONGODB_URI and PORT=8000
-npm run dev
-
-```
-
-### 2. AI Inference Server (Python)
-
-Hosts the ViT and YOLOv8 models.
-
-```bash
-cd FlaskServer
-pip install -r requirements.txt
-python app.py
-# Runs on Port 7001
-
-```
-
-### 3. Frontend Client (React)
-
-User interface for uploading videos and viewing analytics.
-
-```bash
-cd FrontEnd
-npm install
-npm run dev
-# Accessible at http://localhost:5173
-
-```
+*   **Frontend**: `http://localhost:5173`
+*   **Auth Service**: `http://localhost:8000`
+*   **AI Service**: `http://localhost:7001`
 
 ---
 
 ## 🧪 Tech Stack
 
-* **Frontend:** React, TailwindCSS, Framer Motion
-* **Backend:** Node.js, Express, MongoDB
-* **AI/ML:** Python, Flask, PyTorch, Transformers (Hugging Face), OpenCV, YOLOv8
-* **DevOps:** Docker, Docker Compose, Nginx
+*   **Frontend:** React, TailwindCSS, Framer Motion
+*   **Identity Service:** Node.js, Express, `pg` (node-postgres)
+*   **AI Service:** Python, Flask, SQLAlchemy, PyTorch, Transformers, YOLOv8
+*   **Database:** PostgreSQL 15
+*   **External AI:** Google Gemini API
 
 ---
 

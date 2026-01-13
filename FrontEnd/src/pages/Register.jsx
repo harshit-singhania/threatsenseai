@@ -19,7 +19,7 @@ const Register = () => {
     setSuccess(false);
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/users/register', {
+      const response = await fetch('http://localhost:7001/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,6 +34,9 @@ const Register = () => {
       }
 
       setSuccess(true);
+      if (data.user_id) {
+          localStorage.setItem('user_id', data.user_id);
+      }
       setFormData({ name: '', email: '', message: '' });
     } catch (err) {
       console.error("Registration error:", err);

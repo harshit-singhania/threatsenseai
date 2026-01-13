@@ -1,0 +1,11 @@
+
+__pycache__
+*.pyc
+*.pyo
+venv
+.env
+.git
+.DS_Store
+MYKVASIRV2MODEL
+# Exclude model weights if you want them downloaded at runtime, but we probably want them baked in.
+# yolov8n.pt is small enough to keep.
